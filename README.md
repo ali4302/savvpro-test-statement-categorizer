@@ -1,83 +1,77 @@
-# Step-by-Step Guide: How to Fork, Clone, and Submit Your Assessment
+# Statement Categorizer
 
-**Repository:** https://github.com/savvpro/savvpro-test-statement-categorizer
+A full-stack app that uploads a bank or credit-card statement, classifies each transaction with a rules-based categorizer, and lets the user review ambiguous rows before finalizing the total spend by category.
 
----
+## Use case
+This app is built for a freelance consultant who wants a quick tax-time review of personal or business card spending. It recognizes recurring merchants, handles refunds, and flags uncertain transactions as `Needs Review` instead of guessing.
 
-## Step 1: Fork the Repository
+## Tech stack
+- Backend: Python + FastAPI
+- Frontend: Next.js + React
+- Transaction rules: custom Python logic with keyword matching, amount checks, and review thresholds
+- Tests: pytest
 
-1. Go to the repository: https://github.com/savvpro/savvpro-test-statement-categorizer
-2. Click the **Fork** button in the top-right corner.
-3. This will create a copy of the repository in your GitHub account.
+## Setup
 
----
-
-## Step 2: Clone Your Fork
-
-1. Open your forked repository in your GitHub account.
-2. Click the green **Code** button and copy the URL.
-3. Run the following commands:
+### 1) Install Python dependencies
 
 ```bash
-git clone https://github.com/your-username/savvpro-test-statement-categorizer.git
-cd savvpro-test-statement-categorizer
+cd backend
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
----
-
-## Step 3: Read the Task
-
-Open and read **TASK.md** carefully before writing any code.
-
-- TASK.md URL: https://github.com/savvpro/savvpro-test-statement-categorizer/blob/main/TASK.md
-
----
-
-## Step 4: Create a New Branch
-
-Branch pattern: `candidate-<your-github-username>`
+### 2) Install frontend dependencies
 
 ```bash
-git checkout -b candidate-<your-github-username>
+cd frontend
+npm install
 ```
 
-**Example:**
-```bash
-git checkout -b candidate-johndoe
-```
-
----
-
-## Step 5: Complete the Task
-
-Build the full application on your branch.
-
----
-
-## Step 6: Push Your Branch
+### 3) Run the backend
 
 ```bash
-git add .
-git commit -m "feat: complete statement-categorizer assessment"
-git push origin candidate-<your-github-username>
+cd backend
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
----
+### 4) Run the frontend
 
-## Step 7: Create a Pull Request
+```bash
+cd frontend
+npm run dev
+```
 
-1. Go to your **forked** repository on GitHub (`https://github.com/your-username/savvpro-test-statement-categorizer`).
-2. Click **Compare & pull request** (GitHub will show this banner after you push your branch).
-3. Ensure the following settings in the PR form:
-   - **Base repository:** `savvpro/savvpro-test-statement-categorizer` ← the original repo
-   - **Base branch:** `main`
-   - **Head repository:** `your-username/savvpro-test-statement-categorizer` ← your fork
-   - **Compare branch:** `candidate-<your-github-username>`
-4. Use the title: `feat: complete statement-categorizer assessment`
-5. Submit the pull request.
+Open the frontend in your browser at `http://localhost:3000`.
 
-> 💡 **Tip:** If you don't see the banner, go to the original repo (`savvpro/savvpro-test-statement-categorizer`), click the **Pull requests** tab, then click **New pull request** → **compare across forks**.
+## Example CSV format
 
----
+```csv
+Date,Description,Amount
+2024-06-01,ADOBE CREATIVE CLOUD,-59.99
+2024-06-02,UBER *TRIP,-19.40
+2024-06-03,TRANSFER TO SAVINGS,-200.00
+2024-06-04,JOES CAFE 9921,-18.50
+2024-06-06,ADOBE REFUND,29.99
+```
 
-> ⚠️ **Important:** No submissions will be accepted after the deadline.
+## How the categorizer works
+The app does not call an external AI model. Instead, it uses a rules engine that:
+- normalizes merchant names
+- checks positive vs. negative amounts
+- matches recurring merchant keywords to categories
+- flags anything that is not confidently matched as `Needs Review`
+
+## Test command
+
+```bash
+cd backend
+source .venv/bin/activate
+pytest -q
+```
+
+## Notes
+- All data is fake and designed for demos.
+- The app intentionally prefers a review queue over bad guesses.
